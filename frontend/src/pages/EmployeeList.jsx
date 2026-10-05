@@ -122,66 +122,78 @@ function EmployeeList() {
       {error && <p>{error}</p>}
 
       {editEmployee && (
-        <form
-          className="employee-form"
-          onSubmit={handleUpdate}
-        >
+        <form className="employee-form" onSubmit={handleUpdate}>
           <h2>Edit Employee</h2>
 
-          <input
-            type="text"
-            value={editEmployee.name}
-            onChange={(e) =>
-              setEditEmployee({
-                ...editEmployee,
-                name: e.target.value
-              })
-            }
-          />
+          <div className="form-row">
+            <label>Name</label>
+            <input
+              type="text"
+              value={editEmployee.name}
+              onChange={(e) =>
+                setEditEmployee({
+                  ...editEmployee,
+                  name: e.target.value
+                })
+              }
+            />
+          </div>
 
-          <input
-            type="email"
-            value={editEmployee.email}
-            onChange={(e) =>
-              setEditEmployee({
-                ...editEmployee,
-                email: e.target.value
-              })
-            }
-          />
+          <div className="form-row">
+            <label>Email</label>
+            <input
+              type="email"
+              value={editEmployee.email}
+              onChange={(e) =>
+                setEditEmployee({
+                  ...editEmployee,
+                  email: e.target.value
+                })
+              }
+            />
+          </div>
 
-          <input
-            type="text"
-            value={editEmployee.phone}
-            onChange={(e) =>
-              setEditEmployee({
-                ...editEmployee,
-                phone: e.target.value
-              })
-            }
-          />
+          <div className="form-row">
+            <label>Phone</label>
+            <input
+              type="text"
+              value={editEmployee.phone}
+              onChange={(e) =>
+                setEditEmployee({
+                  ...editEmployee,
+                  phone: e.target.value
+                })
+              }
+            />
+          </div>
 
-          <input
-            type="text"
-            value={editEmployee.department}
-            onChange={(e) =>
-              setEditEmployee({
-                ...editEmployee,
-                department: e.target.value
-              })
-            }
-          />
+          <div className="form-row">
+            <label>Department</label>
+            <input
+              type="text"
+              value={editEmployee.department}
+              onChange={(e) =>
+                setEditEmployee({
+                  ...editEmployee,
+                  department: e.target.value
+                })
+              }
+            />
+          </div>
 
-          <input
-            type="number"
-            value={editEmployee.salary}
-            onChange={(e) =>
-              setEditEmployee({
-                ...editEmployee,
-                salary: e.target.value
-              })
-            }
-          />
+          <div className="form-row">
+            <label>Salary</label>
+            <input
+              type="number"
+              value={editEmployee.salary}
+              onChange={(e) =>
+                setEditEmployee({
+                  ...editEmployee,
+                  salary: e.target.value
+                })
+              }
+            />
+          </div>
 
           <button type="submit">
             Update Employee
@@ -193,7 +205,6 @@ function EmployeeList() {
           >
             Cancel
           </button>
-
         </form>
       )}
 
@@ -209,7 +220,7 @@ function EmployeeList() {
               <th>Phone</th>
               <th>Department</th>
               <th>Salary</th>
-              <th>Action</th>
+              <th colSpan={2}>Action</th>
             </tr>
           </thead>
 
@@ -229,14 +240,23 @@ function EmployeeList() {
                   <td>{employee.department}</td>
                   <td>₹{employee.salary}</td>
                   <td>
-                    <button onClick={() => handleEdit(employee)}>
+                    <button
+                      className="edit-button"
+                      onClick={() => handleEdit(employee)}
+                    >
                       Edit
                     </button>
-
-                    <button onClick={() => handleDelete(employee._id)}>
+                  </td>
+                  <td>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDelete(employee._id)}
+                    >
                       Delete
                     </button>
                   </td>
+
+
                 </tr>
               ))
             )}
