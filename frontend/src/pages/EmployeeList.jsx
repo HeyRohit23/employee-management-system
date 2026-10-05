@@ -15,7 +15,7 @@ function EmployeeList() {
       setError("");
 
       const response = await axios.get(
-        "http://localhost:5000/api/employees"
+        "https://employee-management-system-j9if.onrender.com/api/employees"
       );
 
       setEmployees(response.data);
@@ -37,7 +37,7 @@ function EmployeeList() {
     }
     try {
       await axios.delete(
-        `http://localhost:5000/api/employees/${id}`
+        `https://employee-management-system-j9if.onrender.com/api/employees/${id}`
       );
 
       alert("Employee deleted successfully");
@@ -89,7 +89,7 @@ function EmployeeList() {
     try {
 
       await axios.put(
-        `http://localhost:5000/api/employees/${editEmployee._id}`,
+        `https://employee-management-system-j9if.onrender.com/api/employees/${editEmployee._id}`,
         editEmployee
       );
 
