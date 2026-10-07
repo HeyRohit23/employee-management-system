@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 function AddEmployee() {
   const [name, setName] = useState("");
@@ -36,8 +36,8 @@ function AddEmployee() {
     }
 
     try {
-      const response = await axios.post(
-        "https://employee-management-system-j9if.onrender.com/api/employees",
+      const response = await api.post(
+        "/api/employees",
         {
           name: name.trim(),
           email: email.trim(),
@@ -57,7 +57,11 @@ function AddEmployee() {
       setSalary("");
     } catch (error) {
       console.log(error);
-      alert("Failed to add employee");
+
+      alert(
+        error.response?.data?.message ||
+        "Failed to add employee"
+      );
     }
   };
 
@@ -93,6 +97,8 @@ function AddEmployee() {
             placeholder="Enter Phone Number"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
+            maxLength="10"
+            inputMode="numeric"
           />
         </div>
 
@@ -113,6 +119,7 @@ function AddEmployee() {
             placeholder="Enter Salary"
             value={salary}
             onChange={(e) => setSalary(e.target.value)}
+            min="1"
           />
         </div>
 

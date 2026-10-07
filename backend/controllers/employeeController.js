@@ -1,23 +1,20 @@
 const Employee = require("../models/Employee");
 
 // GET all employees
-const getEmployees = async (req, res) => {
+const getEmployees = async (req, res,next) => {
     try {
         const employees = await Employee.find();
 
         res.status(200).json(employees);
 
-    } catch (error) {
-        res.status(500).json({
-            message: "Failed to fetch employees",
-            error: error.message
-        });
+    } catch (error){
+        next(error);
     }
 };
 
 
 // POST - Add employee
-const addEmployee = async (req, res) => {
+const addEmployee = async (req, res,next) => {
     try {
         const employee = new Employee(req.body);
 
@@ -26,16 +23,19 @@ const addEmployee = async (req, res) => {
         res.status(201).json(savedEmployee);
 
     } catch (error) {
-        res.status(500).json({
-            message: "Failed to create employee",
-            error: error.message
-        });
+
+        if (error.code === 11000) {
+            return res.status(409).json({
+                message: "Email or phone already exists"
+            });
+        }
+
+         next(error);
     }
 };
 
-
 // DELETE employee
-const deleteEmployee = async (req, res) => {
+const deleteEmployee = async (req, res,next) => {
     try {
         const deletedEmployee = await Employee.findByIdAndDelete(
             req.params.id
@@ -52,16 +52,13 @@ const deleteEmployee = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({
-            message: "Failed to delete employee",
-            error: error.message
-        });
+        next(error);
     }
 };
 
 
 // PUT - Update employee
-const updateEmployee = async (req, res) => {
+const updateEmployee = async (req, res,next) => {
     try {
         const updatedEmployee = await Employee.findByIdAndUpdate(
             req.params.id,
@@ -81,10 +78,7 @@ const updateEmployee = async (req, res) => {
         res.status(200).json(updatedEmployee);
 
     } catch (error) {
-        res.status(500).json({
-            message: "Failed to update employee",
-            error: error.message
-        });
+        next(error);
     }
 };
 

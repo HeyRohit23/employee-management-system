@@ -1,4 +1,6 @@
 const express = require("express");
+const validate = require("../middleware/validationMiddleware");
+const employeeSchema = require("../middleware/employeeValidation");
 
 
 const {
@@ -16,7 +18,7 @@ router.get("/", getEmployees);
 
 
 // POST add employee
-router.post("/", addEmployee);
+router.post("/",validate(employeeSchema), addEmployee);
 
 
 // DELETE employee
@@ -24,7 +26,7 @@ router.delete("/:id", deleteEmployee);
 
 
 // PUT update employee
-router.put("/:id", updateEmployee);
+router.put("/:id",validate(employeeSchema), updateEmployee);
 
 
 module.exports = router;

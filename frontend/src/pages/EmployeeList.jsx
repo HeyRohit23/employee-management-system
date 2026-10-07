@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
+
 
 function EmployeeList() {
 
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
   const [editEmployee, setEditEmployee] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
+  const [updating, setUpdating] = useState(false);
 
   const fetchEmployees = async () => {
     try {
       setLoading(true);
       setError("");
-
-      const response = await axios.get(
-        "https://employee-management-system-j9if.onrender.com/api/employees"
-      );
+      const response = await api.get("/api/employees");
 
       setEmployees(response.data);
     } catch (error) {
@@ -28,6 +27,7 @@ function EmployeeList() {
   };
 
   const handleDelete = async (id) => {
+
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this employee?"
     );
@@ -35,20 +35,27 @@ function EmployeeList() {
     if (!confirmDelete) {
       return;
     }
+
     try {
-      await axios.delete(
-        `https://employee-management-system-j9if.onrender.com/api/employees/${id}`
-      );
+      setDeletingId(id);
+
+      await api.delete(`/api/employees/${id}`);
 
       alert("Employee deleted successfully");
-
-      fetchEmployees();
+      await fetchEmployees();
 
     } catch (error) {
       console.log(error);
-      alert("Failed to delete employee");
+
+      alert(
+        error.response?.data?.message ||
+        "Failed to delete employee"
+      );
+    } finally {
+      setDeletingId(null);
     }
   };
+
 
   const handleEdit = (employee) => {
     setEditEmployee(employee);
@@ -76,6 +83,7 @@ function EmployeeList() {
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+
     if (!emailPattern.test(editEmployee.email)) {
       alert("Please enter a valid email");
       return;
@@ -88,8 +96,10 @@ function EmployeeList() {
 
     try {
 
-      await axios.put(
-        `https://employee-management-system-j9if.onrender.com/api/employees/${editEmployee._id}`,
+      setUpdating(true);
+
+      await api.put(
+        `/api/employees/${editEmployee._id}`,
         editEmployee
       );
 
@@ -97,13 +107,18 @@ function EmployeeList() {
 
       setEditEmployee(null);
 
-      fetchEmployees();
+      await fetchEmployees();
 
     } catch (error) {
-
       console.log(error);
-      alert("Failed to update employee");
 
+      alert(
+        error.response?.data?.message ||
+        "Failed to update employee"
+      );
+    }
+    finally {
+      setUpdating(false);
     }
   };
 
@@ -164,6 +179,8 @@ function EmployeeList() {
                   phone: e.target.value
                 })
               }
+              maxLength="10"
+              inputMode="numeric"
             />
           </div>
 
@@ -192,11 +209,12 @@ function EmployeeList() {
                   salary: e.target.value
                 })
               }
+              min="1"
             />
           </div>
 
-          <button type="submit">
-            Update Employee
+          <button type="submit" disabled={updating}>
+            {updating ? "Updating..." : "Update Employee"}
           </button>
 
           <button
@@ -227,7 +245,7 @@ function EmployeeList() {
           <tbody>
             {employees.length === 0 && !loading ? (
               <tr>
-                <td colSpan="6" style={{ textAlign: "center" }}>
+                <td colSpan="7" style={{ textAlign: "center" }}>
                   No employees found
                 </td>
               </tr>
@@ -240,19 +258,21 @@ function EmployeeList() {
                   <td>{employee.department}</td>
                   <td>₹{employee.salary}</td>
                   <td>
-                    <button
-                      className="edit-button"
-                      onClick={() => handleEdit(employee)}
-                    >
-                      Edit
-                    </button>
+                    <td>
+                      <button
+                        className="edit-button"
+                        onClick={() => handleEdit(employee)}
+                      >
+                        Edit
+                      </button>
+                    </td>
                   </td>
                   <td>
                     <button
                       className="delete-button"
-                      onClick={() => handleDelete(employee._id)}
+                      onClick={() => handleDelete(employee._id)} disabled={deletingId === employee._id}
                     >
-                      Delete
+                      {deletingId === employee._id ? "Deleting..." : "Delete"}
                     </button>
                   </td>
 
